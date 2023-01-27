@@ -32,28 +32,34 @@ const showColors = ()=>{
 }
 showColors()
 
-const activeEyeDropper = async () =>{
-    try{
-        const eyeDropper = new EyeDropper() // pega o Eyedropper (função do google que usa lupa para pegar cor)
-        const {sRGBHex} = await eyeDropper.open()
-        navigator.clipboard.writeText(sRGBHex) // copia no teclado
-
-
-        //adicionar a cor na lista caso ja n tivesse sido inserida
-        if(!pickedColors.includes(sRGBHex)){
-            pickedColors.push(sRGBHex)
-            localStorage.setItem("picked-colors", JSON.stringify(pickedColors))
-            showColors()
-        }else{
-            Swal.fire({
-            confirmButtonText: 'Cor ja Selecionada',
-            confirmButtonColor: '#3085d6'
-        })
+const activeEyeDropper = () =>{
+    document.body.style.display = "none" // esconde a div enquanto o Eyedropper estiver em uso
+  
+    setTimeout(async() =>{
+        try{
+            const eyeDropper = new EyeDropper() // pega o Eyedropper (função do google que usa lupa para pegar cor)
+            const {sRGBHex} = await eyeDropper.open()
+            navigator.clipboard.writeText(sRGBHex) // copia no teclado
+    
+    
+            //adicionar a cor na lista caso ja n tivesse sido inserida
+            if(!pickedColors.includes(sRGBHex)){
+                pickedColors.push(sRGBHex)
+                localStorage.setItem("picked-colors", JSON.stringify(pickedColors))
+                showColors()
+            }else{
+                Swal.fire({
+                confirmButtonText: 'Cor ja Selecionada',
+                confirmButtonColor: '#3085d6'
+            })
+            }
+    
+        }catch(error){
+            Swal.fire('Essa versão funciona apenas em Navegadores Google')
         }
+    }, 10)
 
-    }catch(error){
-        Swal.fire('Essa versão funciona apenas em Navegadores Google')
-    }
+    document.body.style.display = "block"
 }
 
 // limpando todas as cores, atualizando o armazenamento local, e esconde o elemento do PickedColors
