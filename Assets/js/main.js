@@ -11,6 +11,8 @@ const copyColor = elem =>{
 }
 
 const showColors = ()=>{
+
+    if(!pickedColors.length) return //retorna se n tem cores selecionadas
     colorList.innerHTML = pickedColors.map(color => `
     <li class="color">
     <span
@@ -20,7 +22,7 @@ const showColors = ()=>{
     <div class="value" data-color="${color}">${color}</div>
     </li>
     `).join("") // gera o li pra cor escolhida e adiciona a Colorlist na tela
-
+    document.querySelector(".picked-colors").classList.remove("hide")
 
     // quando clicar na cor escolhida ela sera copiada para o teclado
     document.querySelectorAll(".color").forEach(li => {
@@ -50,10 +52,16 @@ const activeEyeDropper = async () =>{
         }
 
     }catch(error){
-        console.log(error)
+        Swal.fire('Essa versão funciona apenas em Navegadores Google')
     }
 }
 
-colorPickerBtn.addEventListener("click", activeEyeDropper)
+// limpando todas as cores, atualizando o armazenamento local, e esconde o elemento do PickedColors
+const clearAllColors = () => {
+    pickedColors.length = 0;
+    localStorage.setItem("picked-colors", JSON.stringify(pickedColors))
+    document.querySelector(".picked-colors").classList.add("hide")
+}  
 
-const eita = document.querySelector("#color-picker")
+clearAll.addEventListener("click", clearAllColors)
+colorPickerBtn.addEventListener("click", activeEyeDropper)
